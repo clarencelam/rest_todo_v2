@@ -56,7 +56,28 @@ class App extends React.Component {
   // Component to handle TODO item submissions
   handleSubmit(e){
     e.preventDefault()
-    console.log('ITEM:', this.state.activeItem)
+    console.log('ACTIVE ITEM:', this.state.activeItem)
+
+    // We want to send POST data to another URL (backend)
+    var url = 'http://localhost:8000/api/task-create/'
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-type':'application/json',
+      },
+      body:JSON.stringify(this.state.activeItem)
+    }).then((response) => {
+        this.fetchTasks()
+        this.setState({
+          activeItem: {
+            id: null,
+            title: '',
+            completed: false,
+          }     
+        })
+    }).catch(function(error){
+      console.log('ERROR: ', error)
+    })
   }
 
   render() {
@@ -83,7 +104,7 @@ class App extends React.Component {
 
               </div>
             </form>
-            
+
           </div>
 
           <div id="list-wrapper">
