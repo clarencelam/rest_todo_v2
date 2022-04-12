@@ -19,6 +19,9 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.getCookie = this.getCookie.bind(this)
+    this.startEdit = this.startEdit.bind(this)
+    this.deleteItem = this.deleteItem.bind(this)
+
   };
 
   getCookie(name) {
@@ -79,6 +82,14 @@ handleSubmit(e){
 
   // We want to send POST data to another URL (backend)
   var url = 'http://localhost:8000/api/task-create/'
+
+  if(this.state.editing==true){
+    url = `http://localhost:8000/api/task-update/${this.state.activeItem.id}/`
+    this.setState({
+      editing:false
+    })
+  }
+
   fetch(url, {
     method: 'POST',
     headers: {
@@ -100,8 +111,30 @@ handleSubmit(e){
   })
 }
 
+startEdit(task){
+  this.setState({
+    activeItem:task,
+    editing:true,
+  })
+}
+
+deleteItem(task){
+  var csrftoken = this.getCookie('csrftoken')
+
+  fetch(`http://localhost:8000/api/task-delete/${task.id}/`, {
+    method:'DELETE',
+    headers:{
+      'Content-type':'application/json',
+      'X-CSRFToken':csrftoken,
+    },
+  }).then((response) =>{
+    this.fetchTasks()
+  })
+}
+
 render() {
   var tasks = this.state.todoList
+  var self = this // Allows the startEdit() call in the edit button to reference "this" 
 
   return (
     <div className="container">
@@ -139,11 +172,15 @@ render() {
                   </div>
 
                   <div style={{ flex: 1 }}>
-                    <button className="btn btn-sm btn-outline-info">Edit</button>
+                    <button 
+                    className="btn btn-sm btn-outline-info"
+                    onClick={() => self.startEdit(task)}>Edit</button>
                   </div>
 
                   <div style={{ flex: 1 }}>
-                    <button className="btn btn-sm btn-outline-dark delete">-</button>
+                    <button 
+                    className="btn btn-sm btn-outline-dark delete"
+                    onClick={() => self.deleteItem(task)}>-</button>
                   </div>
 
 
