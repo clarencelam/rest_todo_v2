@@ -1,6 +1,37 @@
+
+/* handle background image sizing for mobile screen sizes */
 body{
-  background: rgb(54,217,182);
+  background: rgb(54,217,182) no-repeat center center fixed;
   background: linear-gradient(90deg, rgba(54,217,182,1) 0%, rgba(32,152,126,1) 43%, rgba(0,212,255,1) 100%);
+background-image: url("https://picsum.photos/360/1000?grayscale") ;
+background-size:     cover;     
+
+}
+
+/* using the @media tag to resize background-image, to handle tablets, skinny desktop screens */
+@media screen and (min-width: 480px) {
+  body {
+    background-image: url("https://picsum.photos/768/1500?grayscale");
+    background-size:     cover;     
+      }
+}
+
+/* handle regular desktop screens */ 
+@media screen and (min-width: 800px) {
+  body {
+    background-image: url("https://picsum.photos/1920/2500?grayscale");
+    background-size:     cover;     
+
+  }
+}
+
+/* handle regular desktop screens */ 
+@media screen and (min-width: 1281px) {
+  body {
+    background-image: url("https://picsum.photos/2880/2500?grayscale");
+    background-size:     cover;     
+
+  }
 }
 
 h1, h2, h3, h4, h5, p, span, strike{
