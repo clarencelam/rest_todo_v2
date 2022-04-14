@@ -66,6 +66,7 @@ class App extends React.Component {
 
   // "Lifecycle method"
   componentWillMount() {
+    Modal.setAppElement('body');
     this.fetchTasks()
   }
 
@@ -185,10 +186,10 @@ class App extends React.Component {
       // For each task in the todoList, assign the key to the todo index, print them all
       tasks.map(function (task, index) {
         return (
-          <div key={index} className="task-wrapper flex-wrapper"
-            onClick={() => self.strikeUnstrike(task)}>
+          <div key={index} className="task-wrapper flex-wrapper">
 
-            <div style={{ flex: 7 }}>
+            <div style={{ flex: 7 }}
+            onClick={() => self.strikeUnstrike(task)}>
               {task.completed == false ? (
                 <span>☐ {task.title}</span>
               ) : (
