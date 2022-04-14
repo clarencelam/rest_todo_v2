@@ -39,7 +39,11 @@ class App extends React.Component {
   // Function to call when we want to close the modal
   closeModal(task) {
     this.setState({
-      activeItem: task,
+      activeItem: {
+        id: null,
+        title: '',
+        completed: false,
+      },
       modalOpen: false,
     })
   }
