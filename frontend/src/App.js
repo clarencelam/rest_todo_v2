@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import Modal from 'react-modal';
 
 class App extends React.Component {
   constructor(props) {
@@ -12,6 +13,7 @@ class App extends React.Component {
         completed: false,
       },
       editing: false,
+      modalOpen: false,
     }
 
     // This line gives us access to "this" method within fetchTasks function
@@ -23,7 +25,24 @@ class App extends React.Component {
     this.deleteItem = this.deleteItem.bind(this)
     this.strikeUnstrike = this.strikeUnstrike.bind(this)
 
+    this.closeModal = this.closeModal.bind(this)
+
   };
+
+  // Function to call when we want to open the modal to focus on a task
+  openModal(task) {
+    this.setState({
+      activeItem: task,
+      modalOpen: true,
+    })
+  }
+  // Function to call when we want to close the modal
+  closeModal(task) {
+    this.setState({
+      activeItem: task,
+      modalOpen: false,
+    })
+  }
 
   getCookie(name) {
     let cookieValue = null;
@@ -163,7 +182,7 @@ class App extends React.Component {
       tasks.map(function (task, index) {
         return (
           <div key={index} className="task-wrapper flex-wrapper"
-          onClick={() => self.strikeUnstrike(task)}>
+            onClick={() => self.strikeUnstrike(task)}>
 
             <div style={{ flex: 7 }}>
               {task.completed == false ? (
@@ -171,6 +190,12 @@ class App extends React.Component {
               ) : (
                 <span>☑ <strike> {task.title}</strike></span>
               )}
+            </div>
+
+            <div style={{ flex: 1 }}>
+              <button
+                className="btn btn-sm btn-outline-info"
+                onClick={() => self.openModal(task)}>Focus</button>
             </div>
 
             <div style={{ flex: 1 }}>
@@ -192,7 +217,6 @@ class App extends React.Component {
   }
 
   render() {
-
     return (
       <div className="container">
         <div id="task-container">
@@ -222,6 +246,13 @@ class App extends React.Component {
               this.renderAllTasks()
             }
           </div>
+          <Modal
+            isOpen={this.state.modalOpen}
+            contentLabel="Example Modal"
+          >
+            <h2>{this.state.activeItem.title}</h2>
+            <button onClick={this.closeModal}>close</button>
+          </Modal>
 
         </div>
       </div>
