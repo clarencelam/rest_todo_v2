@@ -1,6 +1,16 @@
 import React from 'react';
 import './App.css';
-import Modal from 'react-modal';
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+} from "reactstrap";
 
 class App extends React.Component {
   constructor(props) {
@@ -66,7 +76,7 @@ class App extends React.Component {
 
   // "Lifecycle method"
   componentWillMount() {
-    Modal.setAppElement('body');
+    // Modal.setAppElement('body');
     this.fetchTasks()
   }
 
@@ -189,7 +199,7 @@ class App extends React.Component {
           <div key={index} className="task-wrapper flex-wrapper">
 
             <div style={{ flex: 7 }}
-            onClick={() => self.strikeUnstrike(task)}>
+              onClick={() => self.strikeUnstrike(task)}>
               {task.completed == false ? (
                 <span>☐ {task.title}</span>
               ) : (
@@ -253,10 +263,13 @@ class App extends React.Component {
           </div>
           <Modal
             isOpen={this.state.modalOpen}
-            contentLabel="Example Modal"
+            toggle={this.closeModal} // when background is clicked, close Modal
           >
-            <h2>{this.state.activeItem.title}</h2>
-            <button onClick={this.closeModal}>close</button>
+            <ModalHeader>{this.state.activeItem.title}</ModalHeader>
+
+            <ModalFooter>
+            <Button onClick={this.closeModal}>close</Button>
+            </ModalFooter>
           </Modal>
 
         </div>
