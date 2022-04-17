@@ -31,11 +31,15 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.getCookie = this.getCookie.bind(this)
-    this.startEdit = this.startEdit.bind(this)
     this.deleteItem = this.deleteItem.bind(this)
     this.strikeUnstrike = this.strikeUnstrike.bind(this)
 
     this.closeModal = this.closeModal.bind(this)
+
+    this.startTitleChange = this.startTitleChange.bind(this)
+    this.saveTitleChange = this.saveTitleChange.bind(this)
+
+    this.toggleCompleteTask = this.toggleCompleteTask.bind(this)
 
   };
 
@@ -46,6 +50,7 @@ class App extends React.Component {
       modalOpen: true,
     })
   }
+  
   // Function to call when we want to close the modal
   closeModal(task) {
     this.setState({
@@ -146,12 +151,39 @@ class App extends React.Component {
     })
   }
 
-  startEdit(task) {
+  startTitleChange() {
     this.setState({
-      activeItem: task,
+      activeItem: this.state.activeItem,
       editing: true,
     })
   }
+
+  saveTitleChange(e) {
+    e.preventDefault()
+    console.log('ACTIVE ITEM:', this.state.activeItem)
+
+    var csrftoken = this.getCookie('csrftoken')
+
+    var url = `http://localhost:8000/api/task-update/${this.state.activeItem.id}/`
+    this.setState({
+      editing: false
+    })
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      body: JSON.stringify(this.state.activeItem)
+    }).then((response) => {
+      this.fetchTasks()
+      console.log(this.state.editing)
+    }).catch(function (error) {
+      console.log('ERROR: ', error)
+    })
+  }
+
 
   deleteItem(task) {
     var csrftoken = this.getCookie('csrftoken')
@@ -187,6 +219,29 @@ class App extends React.Component {
     console.log('Task striked-out: ', task.completed)
   }
 
+  toggleCompleteTask(){
+
+    var task = this.state.activeItem
+    task.completed = !task.completed
+
+    var csrftoken = this.getCookie('csrftoken')
+    var url = `http://localhost:8000/api/task-update/${task.id}/`
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      body: JSON.stringify({ 'completed': task.completed, 'title': task.title })
+    }).then(() => {
+      this.fetchTasks()
+      this.state.modalOpen = false
+    })
+
+    console.log('Task striked-out: ', task.completed)
+  }
+
   renderAllTasks = () => {
     // Component which returns and renders the list of all tasks
     var tasks = this.state.todoList
@@ -211,12 +266,6 @@ class App extends React.Component {
               <button
                 className="btn btn-sm btn-outline-info"
                 onClick={() => self.openModal(task)}>Focus</button>
-            </div>
-
-            <div style={{ flex: 1 }}>
-              <button
-                className="btn btn-sm btn-outline-info"
-                onClick={() => self.startEdit(task)}>Edit</button>
             </div>
 
             <div style={{ flex: 1 }}>
@@ -265,10 +314,29 @@ class App extends React.Component {
             isOpen={this.state.modalOpen}
             toggle={this.closeModal} // when background is clicked, close Modal
           >
-            <ModalHeader>{this.state.activeItem.title}</ModalHeader>
-
+            <ModalHeader>
+              { // If state.editing=true, return form for new title, else return current title
+                this.state.editing == false ? (
+                  <span>{this.state.activeItem.title}</span>
+                ) : (
+                  <Form>
+                    <Input onChange={this.handleChange} value={this.state.activeItem.title}></Input>
+                  </Form>
+                )
+              }
+            </ModalHeader>
+            <ModalBody></ModalBody>
             <ModalFooter>
-            <Button onClick={this.closeModal}>close</Button>
+              <Button onClick={this.toggleCompleteTask}>Complete Task</Button>
+              { // If state.editing=true, return "Save edits" button, else return "Edit" button to begin edit
+                this.state.editing == false ? (
+                  // Start editing
+                  <Button onClick={this.startTitleChange}>Edit</Button>
+                ) : (
+                  <Button onClick={this.saveTitleChange}>Save Changes</Button>
+                )
+              }
+              <Button onClick={this.closeModal}>Close</Button>
             </ModalFooter>
           </Modal>
 
