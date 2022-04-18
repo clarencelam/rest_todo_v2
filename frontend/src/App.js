@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import {
   Button,
@@ -11,6 +11,9 @@ import {
   Input,
   Label,
 } from "reactstrap";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+
 
 class App extends React.Component {
   constructor(props) {
@@ -21,6 +24,7 @@ class App extends React.Component {
         id: null,
         title: '',
         completed: false,
+        description: '',
       },
       editing: false,
       modalOpen: false,
@@ -41,6 +45,8 @@ class App extends React.Component {
 
     this.toggleCompleteTask = this.toggleCompleteTask.bind(this)
 
+    this.handleChangeDesc = this.handleChangeDesc.bind(this)
+
   };
 
   // Function to call when we want to open the modal to focus on a task
@@ -50,7 +56,7 @@ class App extends React.Component {
       modalOpen: true,
     })
   }
-  
+
   // Function to call when we want to close the modal
   closeModal(task) {
     this.setState({
@@ -58,6 +64,7 @@ class App extends React.Component {
         id: null,
         title: '',
         completed: false,
+        description: '',
       },
       modalOpen: false,
     })
@@ -96,6 +103,21 @@ class App extends React.Component {
           todoList: data,
         })
       )
+  }
+
+  // Function to listen for change events in description updates
+  handleChangeDesc(e) {
+    var name = e.target.name
+    var value = e.target.value
+    console.log('Name:', name)
+    console.log('Desc:', value)
+
+    this.setState({
+      activeItem: {
+        ...this.state.activeItem,
+        description:value,
+      }
+    })
   }
 
   // Function to listen for change events
@@ -219,7 +241,7 @@ class App extends React.Component {
     console.log('Task striked-out: ', task.completed)
   }
 
-  toggleCompleteTask(){
+  toggleCompleteTask() {
 
     var task = this.state.activeItem
     task.completed = !task.completed
@@ -310,6 +332,13 @@ class App extends React.Component {
               this.renderAllTasks()
             }
           </div>
+
+          <Editor
+            wrapperClassName="wrapper-class"
+            editorClassName="editor-class"
+            toolbarClassName="toolbar-class"
+          />
+
           <Modal
             isOpen={this.state.modalOpen}
             toggle={this.closeModal} // when background is clicked, close Modal
@@ -325,7 +354,19 @@ class App extends React.Component {
                 )
               }
             </ModalHeader>
-            <ModalBody></ModalBody>
+            <ModalBody>
+              { // If state.editing=true, return form for new description, else return current description
+                this.state.editing == false ? (
+                  <span>{this.state.activeItem.description}</span>
+                ) : (
+                  <Form>
+                    <Input onChange={this.handleChangeDesc}
+                      value={this.state.activeItem.description}></Input>
+                  </Form>
+                )
+              }
+
+            </ModalBody>
             <ModalFooter>
               <Button onClick={this.toggleCompleteTask}>Complete Task</Button>
               { // If state.editing=true, return "Save edits" button, else return "Edit" button to begin edit
