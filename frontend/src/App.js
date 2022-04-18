@@ -12,7 +12,25 @@ import {
   Label,
 } from "reactstrap";
 import { Editor } from "react-draft-wysiwyg";
+import { EditorState, convertToRaw } from 'draft-js';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import draftToHtml from 'draftjs-to-html';
+
+
+const content = {
+  entityMap: {},
+  blocks: [
+    {
+      key: "637gr",
+      text: "Initialized from content state.",
+      type: "unstyled",
+      depth: 0,
+      inlineStyleRanges: [],
+      entityRanges: [],
+      data: {},
+    },
+  ],
+}
 
 
 class App extends React.Component {
@@ -28,6 +46,7 @@ class App extends React.Component {
       },
       editing: false,
       modalOpen: false,
+      contentState: null,
     }
 
     // This line gives us access to "this" method within fetchTasks function
@@ -65,6 +84,7 @@ class App extends React.Component {
         title: '',
         completed: false,
         description: '',
+        contentState: {},
       },
       modalOpen: false,
     })
@@ -106,16 +126,29 @@ class App extends React.Component {
   }
 
   // Function to listen for change events in description updates
-  handleChangeDesc(e) {
-    var name = e.target.name
-    var value = e.target.value
-    console.log('Name:', name)
-    console.log('Desc:', value)
+  // handleChangeDesc(e) {
+  //   var name = e.target.name
+  //   var value = e.target.value
+  //   console.log('Name:', name)
+  //   console.log('Desc:', value)
+
+  //   this.setState({
+  //     activeItem: {
+  //       ...this.state.activeItem,
+  //       description: value,
+  //     }
+  //   })
+  // }
+
+  handleChangeDesc = contentState => {
+    console.log('as HTML:', draftToHtml(contentState))
+
 
     this.setState({
+      contentState,
       activeItem: {
         ...this.state.activeItem,
-        description:value,
+        description: draftToHtml(contentState)
       }
     })
   }
@@ -303,6 +336,7 @@ class App extends React.Component {
   }
 
   render() {
+    const { contentState } = this.state
     return (
       <div className="container">
         <div id="task-container">
@@ -333,12 +367,6 @@ class App extends React.Component {
             }
           </div>
 
-          <Editor
-            wrapperClassName="wrapper-class"
-            editorClassName="editor-class"
-            toolbarClassName="toolbar-class"
-          />
-
           <Modal
             isOpen={this.state.modalOpen}
             toggle={this.closeModal} // when background is clicked, close Modal
@@ -357,11 +385,17 @@ class App extends React.Component {
             <ModalBody>
               { // If state.editing=true, return form for new description, else return current description
                 this.state.editing == false ? (
-                  <span>{this.state.activeItem.description}</span>
+                  <span dangerouslySetInnerHTML={{__html: this.state.activeItem.description}}></span>
                 ) : (
                   <Form>
-                    <Input onChange={this.handleChangeDesc}
-                      value={this.state.activeItem.description}></Input>
+                    <Editor
+                    initialContentState={contentState}
+                    editorContent={contentState}
+                    onContentStateChange={this.handleChangeDesc}
+                      wrapperClassName="wrapper-class"
+                      editorClassName="editor-class"
+                    />
+
                   </Form>
                 )
               }
