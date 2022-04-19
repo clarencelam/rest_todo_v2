@@ -12,14 +12,17 @@ import {
   Label,
 } from "reactstrap";
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, convertFromRaw, ContentState, getCurrentContent } from 'draft-js';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from 'draftjs-to-html';
+import { convertToHTML, convertFromHTML } from 'draft-convert';
+
 
 
 class App extends React.Component {
   constructor(props) {
     super(props);
+    
     this.state = {
       todoList: [],
       activeItem: {
@@ -30,7 +33,10 @@ class App extends React.Component {
       },
       editing: false,
       modalOpen: false,
-      contentState: null,
+      editorState: EditorState.createEmpty()
+
+
+      
     }
 
     // This line gives us access to "this" method within fetchTasks function
@@ -57,7 +63,8 @@ class App extends React.Component {
     this.setState({
       activeItem: task,
       modalOpen: true,
-    })
+    },    
+    )
   }
 
   // Function to call when we want to close the modal
@@ -70,7 +77,8 @@ class App extends React.Component {
         description: '',
       },
       modalOpen: false,
-      contentState: null,
+      editing: false,
+      editorState: EditorState.createEmpty()
     })
   }
 
@@ -110,6 +118,9 @@ class App extends React.Component {
   }
 
   // Function to listen for change events in description updates
+
+  // old function which enabled a description with a simple text field
+
   // handleChangeDesc(e) {
   //   var name = e.target.name
   //   var value = e.target.value
@@ -124,18 +135,24 @@ class App extends React.Component {
   //   })
   // }
 
-  handleChangeDesc = contentState => {
-    console.log('as HTML:', draftToHtml(contentState))
+  // new function to handle changes with the editorState
+  handleChangeDesc = editorState => {
+    const contentState = editorState.getCurrentContent();
+
+    console.log('editorState:', editorState)
+    console.log('contentState in JSON', JSON.stringify(convertToRaw(contentState)))
 
 
     this.setState({
-      contentState,
+      editorState,
       activeItem: {
         ...this.state.activeItem,
-        description: draftToHtml(contentState)
+        description: convertToHTML(contentState)
       }
     })
   }
+
+
 
   // Function to listen for change events
   handleChange(e) {
@@ -183,6 +200,7 @@ class App extends React.Component {
           id: null,
           title: '',
           completed: false,
+          description: '',
         }
       })
     }).catch(function (error) {
@@ -191,9 +209,16 @@ class App extends React.Component {
   }
 
   startTitleChange() {
+    // these const values are a part of my hacky code for the rich text editor to initiate with current description values
+    const regex = /(<([^>]+)>)/ig;
+    const plaintextdescription = this.state.activeItem.description.toString()
+    const unhtmlplaintext = plaintextdescription.replace(regex, '')
+    const existingcontentstate = ContentState.createFromText(unhtmlplaintext)
+    const existingeditorstate = EditorState.createWithContent(existingcontentstate)
     this.setState({
       activeItem: this.state.activeItem,
       editing: true,
+      editorState: existingeditorstate,
     })
   }
 
@@ -320,7 +345,8 @@ class App extends React.Component {
   }
 
   render() {
-    const { contentState } = this.state
+    const content = ContentState.createFromText(this.state.activeItem.description);
+
     return (
       <div className="container">
         <div id="task-container">
@@ -370,12 +396,15 @@ class App extends React.Component {
               { // If state.editing=true, return form for new description, else return current description
                 this.state.editing == false ? (
                   <span dangerouslySetInnerHTML={{__html: this.state.activeItem.description}}></span>
+                  // This is not secure, I'll need to come back and find a better way to surface the description text
                 ) : (
                   <Form>
                     <Editor
-                    initialContentState={contentState}
-                    editorContent={contentState}
-                    onContentStateChange={this.handleChangeDesc}
+                      // initialContentState={this.state.activeItem.contentState}
+                      // editorContent={this.state.activeItem.contentState}
+                      // onContentStateChange={this.handleChangeDesc}
+                      editorState={this.state.editorState}
+                      onEditorStateChange={this.handleChangeDesc}
                       wrapperClassName="wrapper-class"
                       editorClassName="editor-class"
                     />
