@@ -17,22 +17,6 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from 'draftjs-to-html';
 
 
-const content = {
-  entityMap: {},
-  blocks: [
-    {
-      key: "637gr",
-      text: "Initialized from content state.",
-      type: "unstyled",
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [],
-      data: {},
-    },
-  ],
-}
-
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -84,9 +68,9 @@ class App extends React.Component {
         title: '',
         completed: false,
         description: '',
-        contentState: {},
       },
       modalOpen: false,
+      contentState: null,
     })
   }
 
