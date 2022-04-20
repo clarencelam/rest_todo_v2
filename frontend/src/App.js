@@ -351,11 +351,10 @@ class App extends React.Component {
         <div id="task-container">
 
           <div id="form-wrapper">
+            <div>{<Greeting />}
+            </div>
 
-            {<Greeting />}
-            
           </div>
-          
           <div id="form-wrapper">
 
             <form onSubmit={this.handleSubmit} id="form">
