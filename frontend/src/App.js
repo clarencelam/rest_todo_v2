@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import {Greeting} from './components/clock.js';
+import { Greeting } from './components/clock.js';
 import {
   Button,
   Modal,
@@ -348,13 +348,15 @@ class App extends React.Component {
 
     return (
       <div className="container">
+
+        <div id="header-container">
+          <div id="header-wrapper">
+          {<Greeting />}
+          </div>
+        </div>
+
         <div id="task-container">
 
-          <div id="form-wrapper">
-            <div>{<Greeting />}
-            </div>
-
-          </div>
           <div id="form-wrapper">
 
             <form onSubmit={this.handleSubmit} id="form">
