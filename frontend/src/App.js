@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import {Greeting} from './components/clock.js';
 import {
   Button,
   Modal,
@@ -22,7 +23,7 @@ import { convertToHTML, convertFromHTML } from 'draft-convert';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       todoList: [],
       activeItem: {
@@ -33,10 +34,8 @@ class App extends React.Component {
       },
       editing: false,
       modalOpen: false,
-      editorState: EditorState.createEmpty()
+      editorState: EditorState.createEmpty(),
 
-
-      
     }
 
     // This line gives us access to "this" method within fetchTasks function
@@ -63,7 +62,7 @@ class App extends React.Component {
     this.setState({
       activeItem: task,
       modalOpen: true,
-    },    
+    },
     )
   }
 
@@ -353,6 +352,12 @@ class App extends React.Component {
 
           <div id="form-wrapper">
 
+            {<Greeting />}
+            
+          </div>
+          
+          <div id="form-wrapper">
+
             <form onSubmit={this.handleSubmit} id="form">
 
               <div className="flex-wrapper">
@@ -395,7 +400,7 @@ class App extends React.Component {
             <ModalBody>
               { // If state.editing=true, return form for new description, else return current description
                 this.state.editing == false ? (
-                  <span dangerouslySetInnerHTML={{__html: this.state.activeItem.description}}></span>
+                  <span dangerouslySetInnerHTML={{ __html: this.state.activeItem.description }}></span>
                   // This is not secure, I'll need to come back and find a better way to surface the description text
                 ) : (
                   <Form>
