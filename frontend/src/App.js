@@ -219,18 +219,14 @@ class App extends React.Component {
     this.fetchTasks();
   }
 
-
-  renderAllTasks = () => {
-    // Component which returns and renders the list of all tasks
-    var tasks = this.state.todoList
+  renderOpenTasks(){
     var self = this // Allows the function calls to reference "this" 
-
-    return (
-      // For each task in the todoList, assign the key to the todo index, print them all
-      tasks.map(function (task, index) {
+    var openTasks = this.state.todoList.filter(task => task.completed === false)
+    return(
+      openTasks = openTasks.map(function (task, index) {
         return (
           <div key={index} className="task-wrapper flex-wrapper">
-
+  
             <div style={{ flex: 7 }}
               onClick={() => self.strikeUnstrike(task)}>
               {task.completed == false ? (
@@ -239,24 +235,59 @@ class App extends React.Component {
                 <span>☑ <strike> {task.title}</strike></span>
               )}
             </div>
-
+  
             <div style={{ flex: 1 }}>
               <button
                 className="btn btn-sm btn-outline-info"
                 onClick={() => self.openModal(task)}>Focus</button>
             </div>
-
+  
             <div style={{ flex: 1 }}>
               <button
                 className="btn btn-sm btn-outline-dark delete"
                 onClick={() => self.deleteItem(task)}>-</button>
             </div>
-
+  
           </div>
         )
       })
-    )
-  }
+  )
+}
+
+renderClosedTasks(){
+  var self = this // Allows the function calls to reference "this" 
+  var openTasks = this.state.todoList.filter(task => task.completed === true)
+  return(
+    openTasks = openTasks.map(function (task, index) {
+      return (
+        <div key={index} className="task-wrapper flex-wrapper">
+
+          <div style={{ flex: 7 }}
+            onClick={() => self.strikeUnstrike(task)}>
+            {task.completed == false ? (
+              <span>☐ {task.title}</span>
+            ) : (
+              <span>☑ <strike> {task.title}</strike></span>
+            )}
+          </div>
+
+          <div style={{ flex: 1 }}>
+            <button
+              className="btn btn-sm btn-outline-info"
+              onClick={() => self.openModal(task)}>Focus</button>
+          </div>
+
+          <div style={{ flex: 1 }}>
+            <button
+              className="btn btn-sm btn-outline-dark delete"
+              onClick={() => self.deleteItem(task)}>-</button>
+          </div>
+
+        </div>
+      )
+    })
+)
+}
 
   render() {
 
@@ -291,9 +322,8 @@ class App extends React.Component {
           </div>
 
           <div id="list-wrapper">
-            {
-              this.renderAllTasks()
-            }
+            {this.renderOpenTasks()}
+            {this.renderClosedTasks()}
           </div>
 
           <FocusModal
