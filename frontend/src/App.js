@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Greeting } from './components/clock.js';
+import { Greeting } from './components/Greeting.js';
+import {FocusModal} from './components/Modal.js'
 import {
   Button,
   Modal,
@@ -56,30 +57,6 @@ class App extends React.Component {
     this.handleChangeDesc = this.handleChangeDesc.bind(this)
 
   };
-
-  // Function to call when we want to open the modal to focus on a task
-  openModal(task) {
-    this.setState({
-      activeItem: task,
-      modalOpen: true,
-    },
-    )
-  }
-
-  // Function to call when we want to close the modal
-  closeModal(task) {
-    this.setState({
-      activeItem: {
-        id: null,
-        title: '',
-        completed: false,
-        description: '',
-      },
-      modalOpen: false,
-      editing: false,
-      editorState: EditorState.createEmpty()
-    })
-  }
 
   getCookie(name) {
     let cookieValue = null;
@@ -305,6 +282,31 @@ class App extends React.Component {
     console.log('Task striked-out: ', task.completed)
   }
 
+    // Function to call when we want to open the modal to focus on a task
+    openModal(task) {
+      this.setState({
+        activeItem: task,
+        modalOpen: true,
+      },
+      )
+    }
+  
+    // Function to call when we want to close the modal
+    closeModal(task) {
+      this.setState({
+        activeItem: {
+          id: null,
+          title: '',
+          completed: false,
+          description: '',
+        },
+        modalOpen: false,
+        editing: false,
+        editorState: EditorState.createEmpty()
+      })
+    }
+  
+
   renderAllTasks = () => {
     // Component which returns and renders the list of all tasks
     var tasks = this.state.todoList
@@ -383,7 +385,25 @@ class App extends React.Component {
             }
           </div>
 
-          <Modal
+          <FocusModal
+          isOpen={this.state.modalOpen}
+          toggle={this.closeModal}
+          toggleComplete={this.toggleCompleteTask}
+          todoItem={this.state.activeItem}
+          className="Modal"
+          /> 
+
+
+
+        </div>
+      </div>
+    )
+  }
+}
+
+export default App;
+
+/* <Modal
             isOpen={this.state.modalOpen}
             toggle={this.closeModal} // when background is clicked, close Modal
           >
@@ -432,12 +452,4 @@ class App extends React.Component {
               }
               <Button onClick={this.closeModal}>Close</Button>
             </ModalFooter>
-          </Modal>
-
-        </div>
-      </div>
-    )
-  }
-}
-
-export default App;
+          </Modal> */
