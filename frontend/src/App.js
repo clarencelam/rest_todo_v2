@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Greeting } from './components/Greeting.js';
-import {FocusModal} from './components/Modal.js'
+import { FocusModal } from './components/Modal.js'
 import {
   Button,
   Modal,
@@ -49,8 +49,8 @@ class App extends React.Component {
 
     this.closeModal = this.closeModal.bind(this)
 
-    this.startTitleChange = this.startTitleChange.bind(this)
-    this.saveTitleChange = this.saveTitleChange.bind(this)
+    // this.startTitleChange = this.startTitleChange.bind(this)
+    // this.saveTitleChange = this.saveTitleChange.bind(this)
 
     this.toggleCompleteTask = this.toggleCompleteTask.bind(this)
 
@@ -76,7 +76,6 @@ class App extends React.Component {
 
   // "Lifecycle method"
   componentWillMount() {
-    // Modal.setAppElement('body');
     this.fetchTasks()
   }
 
@@ -94,40 +93,16 @@ class App extends React.Component {
   }
 
   // Function to listen for change events in description updates
-
-  // old function which enabled a description with a simple text field
-
-  // handleChangeDesc(e) {
-  //   var name = e.target.name
-  //   var value = e.target.value
-  //   console.log('Name:', name)
-  //   console.log('Desc:', value)
-
-  //   this.setState({
-  //     activeItem: {
-  //       ...this.state.activeItem,
-  //       description: value,
-  //     }
-  //   })
-  // }
-
-  // new function to handle changes with the editorState
-  handleChangeDesc = editorState => {
-    const contentState = editorState.getCurrentContent();
-
-    console.log('editorState:', editorState)
-    console.log('contentState in JSON', JSON.stringify(convertToRaw(contentState)))
-
+  handleChangeDesc(e) {
+    var value = e.target.value
 
     this.setState({
-      editorState,
       activeItem: {
         ...this.state.activeItem,
-        description: convertToHTML(contentState)
+        description: value,
       }
     })
   }
-
 
 
   // Function to listen for change events
@@ -183,47 +158,6 @@ class App extends React.Component {
       console.log('ERROR: ', error)
     })
   }
-
-  startTitleChange() {
-    // these const values are a part of my hacky code for the rich text editor to initiate with current description values
-    const regex = /(<([^>]+)>)/ig;
-    const plaintextdescription = this.state.activeItem.description.toString()
-    const unhtmlplaintext = plaintextdescription.replace(regex, '')
-    const existingcontentstate = ContentState.createFromText(unhtmlplaintext)
-    const existingeditorstate = EditorState.createWithContent(existingcontentstate)
-    this.setState({
-      activeItem: this.state.activeItem,
-      editing: true,
-      editorState: existingeditorstate,
-    })
-  }
-
-  saveTitleChange(e) {
-    e.preventDefault()
-    console.log('ACTIVE ITEM:', this.state.activeItem)
-
-    var csrftoken = this.getCookie('csrftoken')
-
-    var url = `http://localhost:8000/api/task-update/${this.state.activeItem.id}/`
-    this.setState({
-      editing: false
-    })
-
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-        'X-CSRFToken': csrftoken,
-      },
-      body: JSON.stringify(this.state.activeItem)
-    }).then((response) => {
-      this.fetchTasks()
-      console.log(this.state.editing)
-    }).catch(function (error) {
-      console.log('ERROR: ', error)
-    })
-  }
-
 
   deleteItem(task) {
     var csrftoken = this.getCookie('csrftoken')
@@ -282,30 +216,31 @@ class App extends React.Component {
     console.log('Task striked-out: ', task.completed)
   }
 
-    // Function to call when we want to open the modal to focus on a task
-    openModal(task) {
-      this.setState({
-        activeItem: task,
-        modalOpen: true,
+  // Function to call when we want to open the modal to focus on a task
+  openModal(task) {
+    this.setState({
+      activeItem: task,
+      modalOpen: true,
+    },
+    )
+  }
+
+  // Function to call when we want to close the modal
+  closeModal(task) {
+    this.setState({
+      activeItem: {
+        id: null,
+        title: '',
+        completed: false,
+        description: '',
       },
-      )
-    }
-  
-    // Function to call when we want to close the modal
-    closeModal(task) {
-      this.setState({
-        activeItem: {
-          id: null,
-          title: '',
-          completed: false,
-          description: '',
-        },
-        modalOpen: false,
-        editing: false,
-        editorState: EditorState.createEmpty()
-      })
-    }
-  
+      modalOpen: false,
+      editing: false,
+      editorState: EditorState.createEmpty()
+    });
+    this.fetchTasks();
+  }
+
 
   renderAllTasks = () => {
     // Component which returns and renders the list of all tasks
@@ -353,7 +288,7 @@ class App extends React.Component {
 
         <div id="header-container">
           <div id="header-wrapper">
-          {<Greeting />}
+            {<Greeting />}
           </div>
         </div>
 
@@ -386,12 +321,14 @@ class App extends React.Component {
           </div>
 
           <FocusModal
-          isOpen={this.state.modalOpen}
-          toggle={this.closeModal}
-          toggleComplete={this.toggleCompleteTask}
-          todoItem={this.state.activeItem}
-          className="Modal"
-          /> 
+            isOpen={this.state.modalOpen}
+            toggle={this.closeModal}
+            toggleComplete={this.toggleCompleteTask}
+            onChange={this.handleChange}
+            onDescChange={this.handleChangeDesc}
+            todoItem={this.state.activeItem}
+            className="Modal"
+          />
 
 
 
@@ -402,6 +339,50 @@ class App extends React.Component {
 }
 
 export default App;
+
+  // // new function to handle changes with the editorState
+  // handleChangeDesc = editorState => {
+  //   const contentState = editorState.getCurrentContent();
+
+  //   console.log('editorState:', editorState)
+  //   console.log('contentState in JSON', JSON.stringify(convertToRaw(contentState)))
+
+
+  //   this.setState({
+  //     editorState,
+  //     activeItem: {
+  //       ...this.state.activeItem,
+  //       description: convertToHTML(contentState)
+  //     }
+  //   })
+  // }
+
+
+/* Save Title function
+  saveTitleChange() {
+
+    var csrftoken = this.getCookie('csrftoken')
+
+    var url = `http://localhost:8000/api/task-update/${this.state.activeItem.id}/`
+    this.setState({
+      editing: false
+    })
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      body: JSON.stringify(this.state.activeItem)
+    }).then((response) => {
+      this.fetchTasks()
+      console.log(this.state.editing)
+    }).catch(function (error) {
+      console.log('ERROR: ', error)
+    })
+  }
+*/
 
 /* <Modal
             isOpen={this.state.modalOpen}
