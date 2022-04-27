@@ -2,24 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { Greeting } from './components/Greeting.js';
 import { FocusModal } from './components/Modal.js'
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-} from "reactstrap";
-import { Editor } from "react-draft-wysiwyg";
-import { EditorState, convertToRaw, convertFromRaw, ContentState, getCurrentContent } from 'draft-js';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import draftToHtml from 'draftjs-to-html';
-import { convertToHTML, convertFromHTML } from 'draft-convert';
-
-
 
 class App extends React.Component {
   constructor(props) {
@@ -35,7 +18,6 @@ class App extends React.Component {
       },
       editing: false,
       modalOpen: false,
-      editorState: EditorState.createEmpty(),
 
     }
 
@@ -48,9 +30,6 @@ class App extends React.Component {
     this.strikeUnstrike = this.strikeUnstrike.bind(this)
 
     this.closeModal = this.closeModal.bind(this)
-
-    // this.startTitleChange = this.startTitleChange.bind(this)
-    // this.saveTitleChange = this.saveTitleChange.bind(this)
 
     this.toggleCompleteTask = this.toggleCompleteTask.bind(this)
 
@@ -236,7 +215,6 @@ class App extends React.Component {
       },
       modalOpen: false,
       editing: false,
-      editorState: EditorState.createEmpty()
     });
     this.fetchTasks();
   }
@@ -281,7 +259,6 @@ class App extends React.Component {
   }
 
   render() {
-    const content = ContentState.createFromText(this.state.activeItem.description);
 
     return (
       <div className="container">
@@ -293,7 +270,6 @@ class App extends React.Component {
         </div>
 
         <div id="task-container">
-
           <div id="form-wrapper">
 
             <form onSubmit={this.handleSubmit} id="form">
@@ -326,6 +302,7 @@ class App extends React.Component {
             toggleComplete={this.toggleCompleteTask}
             onChange={this.handleChange}
             onDescChange={this.handleChangeDesc}
+            getCookies={this.getCookie}
             todoItem={this.state.activeItem}
             className="Modal"
           />
