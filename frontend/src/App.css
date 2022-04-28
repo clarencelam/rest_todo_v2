@@ -46,7 +46,6 @@ h1, h2, h3, h4, h5, p, span, strike{
   background-color: #fff;
   
   margin-top:50px;
-  margin-bottom:100px;
 
   justify-content: space-around;
   align-items: flex-start;
@@ -86,6 +85,17 @@ h1, h2, h3, h4, h5, p, span, strike{
   padding:40px;
 }
 
+#done-header{
+  margin: auto;
+  text-align: center;
+
+  top: 0rem;
+  border-bottom: 1px solid  #e9e9e9;
+  background-color: #fff;
+  padding:20px;
+}
+
+
 #submit{
   background-color: #36d9b6;
   border-radius: 0;
@@ -99,7 +109,7 @@ h1, h2, h3, h4, h5, p, span, strike{
 
 .task-wrapper{
     cursor: pointer;
-    border-bottom: 1px solid  #e9e9e9;
+    border-bottom: 0px solid  #e9e9e9;
     color: #686868;
     margin:5px;
     padding:20px;
@@ -107,5 +117,9 @@ h1, h2, h3, h4, h5, p, span, strike{
 
 .task-wrapper:hover{
     background-color: #F0F0F0;
+}
+
+#list-wrapper{
+  border-bottom:0px solid black;
 }
 

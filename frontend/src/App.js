@@ -229,11 +229,7 @@ class App extends React.Component {
   
             <div style={{ flex: 7 }}
               onClick={() => self.strikeUnstrike(task)}>
-              {task.completed == false ? (
-                <span>☐ {task.title}</span>
-              ) : (
-                <span>☑ <strike> {task.title}</strike></span>
-              )}
+                <span>☐ {index+1}. {task.title}</span>
             </div>
   
             <div style={{ flex: 1 }}>
@@ -271,10 +267,10 @@ renderClosedTasks(){
             )}
           </div>
 
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 2}}>
             <button
               className="btn btn-sm btn-outline-info"
-              onClick={() => self.openModal(task)}>Focus</button>
+              onClick={() => self.strikeUnstrike(task)}>Re-open</button>
           </div>
 
           <div style={{ flex: 1 }}>
@@ -323,7 +319,6 @@ renderClosedTasks(){
 
           <div id="list-wrapper">
             {this.renderOpenTasks()}
-            {this.renderClosedTasks()}
           </div>
 
           <FocusModal
@@ -339,6 +334,15 @@ renderClosedTasks(){
 
 
 
+        </div>
+
+        <div id="task-container">
+          <div id="done-header">
+            <h6>DONE!</h6>
+          </div>
+        <div id="list-wrapper">
+            {this.renderClosedTasks()}
+          </div>
         </div>
       </div>
     )
