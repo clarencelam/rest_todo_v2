@@ -1,0 +1,48 @@
+#timer-container{
+    border-top: 2px solid grey;
+    padding: 20px;
+    background-color: lightgrey;
+}
+
+#enter-time{
+    display: flex;
+    align-items: flex-end;
+    justify-content:start;
+    padding-bottom: 10px;
+  }
+
+#small{
+    width: 25%;
+}
+
+#title-row{
+    display:flex;
+    justify-content: center;
+}
+
+.text{
+    font-family: 'Montserrat', sans-serif;
+
+}
+
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+
+}
+
+.column-1 {
+    align-self:flex-end;
+    text-align:left;
+
+}
+
+.column-2 {
+    align-self: center;
+    text-align: center;
+
+    border: 2px solid grey;
+    padding: 10px;
+}
