@@ -18,7 +18,7 @@ class App extends React.Component {
       },
       editing: false,
       modalOpen: false,
-      showDone: true,
+      showDone: false,
     }
 
     // This line gives us access to "this" method within fetchTasks function
@@ -387,16 +387,19 @@ class App extends React.Component {
 
         <div id="done-container">
           <div id="done-header">
+            <div></div>
             <button
               className="btn btn-sm btn-outline-info"
               id="toggleDone"
               onClick={this.toggleShowDone}
-            >Dropdown</button>
-            <h6>DONE!</h6>
+            >{this.state.showDone ? "⇈ DONE ⇈" : "⇊ DONE ⇊"}</button>
+            <div></div>
             <button
               className="btn btn-sm btn-outline-info"
             >Clear all done</button>
+            <div></div>
           </div>
+          
           <div id="done-wrapper">
             {this.renderClosedTasks()}
           </div>

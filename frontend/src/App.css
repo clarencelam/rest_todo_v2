@@ -142,6 +142,12 @@ h1, h2, h3, h4, h5, p, span, strike{
   border-bottom:0px solid black;
   background-color: transparent;
   transition: all .5s ease;
+
+  position:relative;
+  visibility: visible;
+  opacity: 1;
+  transform: 0%;
+
 }
 
 #done-header{
