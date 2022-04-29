@@ -189,8 +189,17 @@ class App extends React.Component {
       body: JSON.stringify({ 'completed': task.completed, 'title': task.title })
     }).then(() => {
       this.fetchTasks()
-      this.state.modalOpen = false
-    })
+      this.setState({
+        activeItem: {
+          id: null,
+          title: '',
+          completed: false,
+          description: '',
+        },
+        modalOpen: false,
+        editing: false,
+      });
+      })
 
     console.log('Task striked-out: ', task.completed)
   }

@@ -11,8 +11,8 @@
     padding-bottom: 10px;
   }
 
-#small{
-    width: 25%;
+#minutes{
+    width: 40%;
 }
 
 #title-row{
@@ -28,7 +28,7 @@
 
 .row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 2fr;
     justify-items: center;
 
 }
@@ -43,6 +43,10 @@
     align-self: center;
     text-align: center;
 
+}
+
+.row-1{
     border: 2px solid grey;
     padding: 10px;
+
 }
