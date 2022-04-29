@@ -18,7 +18,7 @@ class App extends React.Component {
       },
       editing: false,
       modalOpen: false,
-
+      showDone: true,
     }
 
     // This line gives us access to "this" method within fetchTasks function
@@ -34,6 +34,8 @@ class App extends React.Component {
     this.toggleCompleteTask = this.toggleCompleteTask.bind(this)
 
     this.handleChangeDesc = this.handleChangeDesc.bind(this)
+    this.hideDone = this.hideDone.bind(this)
+    this.toggleShowDone = this.toggleShowDone.bind(this)
 
   };
 
@@ -199,7 +201,7 @@ class App extends React.Component {
         modalOpen: false,
         editing: false,
       });
-      })
+    })
 
     console.log('Task striked-out: ', task.completed)
   }
@@ -228,71 +230,109 @@ class App extends React.Component {
     this.fetchTasks();
   }
 
-  renderOpenTasks(){
+  toggleShowDone() {
+    this.setState({
+      showDone: !this.state.showDone,
+    })
+    console.log("toggled showDone to: ", this.state.showDone);
+    this.hideDone()
+  }
+
+  hideDone() {
+    // if this.state.showDone === false, hide the done section
+    var doneItems = document.getElementById("done-wrapper");
+    var doneContainer = document.getElementById("done-container")
+    var showDone = this.state.showDone;
+
+    if (showDone === false) {
+      // hide Done section
+      doneItems.style.position = "relative";
+      doneItems.style.visibility = "hidden";
+      doneItems.style.opacity = "0";
+      doneItems.style.transform = "translateY(-100%)";
+      // remove container color & boxshadow
+      doneContainer.style.backgroundColor = "transparent";
+      doneContainer.style.boxShadow = "none";
+
+    } else {
+      // show Done section
+      doneItems.style.position = "relative";
+      doneItems.style.visibility = "visible";
+      doneItems.style.opacity = "1";
+      doneItems.style.transform = "translateY(0%)";
+
+      // re-add container color & boxshadow
+      doneContainer.style.backgroundColor = "white";
+      doneContainer.style.boxShadow = "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)"
+
+    }
+  }
+
+  renderOpenTasks() {
     var self = this // Allows the function calls to reference "this" 
     var openTasks = this.state.todoList.filter(task => task.completed === false)
-    return(
+    return (
       openTasks = openTasks.map(function (task, index) {
         return (
           <div key={index} className="task-wrapper flex-wrapper">
-  
+
             <div style={{ flex: 7 }}
               onClick={() => self.strikeUnstrike(task)}>
-                <span>☐ {index+1}. {task.title}</span>
+              <span>☐ {index + 1}. {task.title}</span>
             </div>
-  
+
             <div style={{ flex: 1 }}>
               <button
                 className="btn btn-sm btn-outline-info"
                 onClick={() => self.openModal(task)}>Focus</button>
             </div>
-  
+
             <div style={{ flex: 1 }}>
               <button
                 className="btn btn-sm btn-outline-dark delete"
                 onClick={() => self.deleteItem(task)}>-</button>
             </div>
-  
+
           </div>
         )
       })
-  )
-}
+    )
+  }
 
-renderClosedTasks(){
-  var self = this // Allows the function calls to reference "this" 
-  var openTasks = this.state.todoList.filter(task => task.completed === true)
-  return(
-    openTasks = openTasks.map(function (task, index) {
-      return (
-        <div key={index} className="task-wrapper flex-wrapper">
+  renderClosedTasks() {
+    var self = this // Allows the function calls to reference "this" 
+    var openTasks = this.state.todoList.filter(task => task.completed === true)
+    return (
+      openTasks = openTasks.map(function (task, index) {
+        return (
+          <div key={index} className="task-wrapper flex-wrapper">
 
-          <div style={{ flex: 7 }}
-            onClick={() => self.strikeUnstrike(task)}>
-            {task.completed == false ? (
-              <span>☐ {task.title}</span>
-            ) : (
-              <span>☑ <strike> {task.title}</strike></span>
-            )}
+            <div style={{ flex: 7 }}
+              onClick={() => self.strikeUnstrike(task)}>
+              {task.completed == false ? (
+                <span>☐ {task.title}</span>
+              ) : (
+                <span>☑ <strike> {task.title}</strike></span>
+              )}
+            </div>
+
+            <div style={{ flex: 2 }}>
+              <button
+                className="btn btn-sm btn-outline-info"
+                onClick={() => self.strikeUnstrike(task)}>Re-open</button>
+            </div>
+
+            <div style={{ flex: 1 }}>
+              <button
+                className="btn btn-sm btn-outline-dark delete"
+                onClick={() => self.deleteItem(task)}>-</button>
+            </div>
+
           </div>
-
-          <div style={{ flex: 2}}>
-            <button
-              className="btn btn-sm btn-outline-info"
-              onClick={() => self.strikeUnstrike(task)}>Re-open</button>
-          </div>
-
-          <div style={{ flex: 1 }}>
-            <button
-              className="btn btn-sm btn-outline-dark delete"
-              onClick={() => self.deleteItem(task)}>-</button>
-          </div>
-
-        </div>
-      )
-    })
-)
-}
+        )
+      })
+    )
+  }
 
   render() {
 
@@ -345,11 +385,19 @@ renderClosedTasks(){
 
         </div>
 
-        <div id="task-container">
+        <div id="done-container">
           <div id="done-header">
+            <button
+              className="btn btn-sm btn-outline-info"
+              id="toggleDone"
+              onClick={this.toggleShowDone}
+            >Dropdown</button>
             <h6>DONE!</h6>
+            <button
+              className="btn btn-sm btn-outline-info"
+            >Clear all done</button>
           </div>
-        <div id="list-wrapper">
+          <div id="done-wrapper">
             {this.renderClosedTasks()}
           </div>
         </div>
