@@ -268,6 +268,25 @@ class App extends React.Component {
     }
   }
 
+  deleteManyTasks(tasklist) {
+    // method to delete a list of tasks
+    var csrftoken = this.getCookie('csrftoken');
+
+    tasklist.map((task) => {
+      console.log("Deleting task ID / Title: ", task.id , "/", task.title);
+      fetch(`http://localhost:8000/api/task-delete/${task.id}/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-type': 'application/json',
+          'X-CSRFToken': csrftoken,
+        }
+    }
+    ).then((response) => {
+      this.fetchTasks()})
+    });
+  }
+
+
   renderOpenTasks() {
     var self = this // Allows the function calls to reference "this" 
     var openTasks = this.state.todoList.filter(task => task.completed === false)
@@ -396,10 +415,11 @@ class App extends React.Component {
             <div></div>
             <button
               className="btn btn-sm btn-outline-info"
+              onClick={() => this.deleteManyTasks(this.state.todoList.filter(task => task.completed === true))}
             >Clear all done</button>
             <div></div>
           </div>
-          
+
           <div id="done-wrapper">
             {this.renderClosedTasks()}
           </div>
