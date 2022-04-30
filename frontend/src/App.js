@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Greeting } from './components/Greeting.js';
-import { FocusModal } from './components/Modal.js'
+import { FocusModal } from './components/Modal.js';
+import {
+  Button,
+} from 'reactstrap';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 class App extends React.Component {
@@ -273,16 +276,17 @@ class App extends React.Component {
     var csrftoken = this.getCookie('csrftoken');
 
     tasklist.map((task) => {
-      console.log("Deleting task ID / Title: ", task.id , "/", task.title);
+      console.log("Deleting task ID / Title: ", task.id, "/", task.title);
       fetch(`http://localhost:8000/api/task-delete/${task.id}/`, {
         method: 'DELETE',
         headers: {
           'Content-type': 'application/json',
           'X-CSRFToken': csrftoken,
         }
-    }
-    ).then((response) => {
-      this.fetchTasks()})
+      }
+      ).then((response) => {
+        this.fetchTasks()
+      })
     });
   }
 
@@ -414,9 +418,10 @@ class App extends React.Component {
             >{this.state.showDone ? "⇈ DONE ⇈" : "⇊ DONE ⇊"}</button>
             <div></div>
             <button
-              className="btn btn-sm btn-outline-info"
+              class="dangerButton"
               onClick={() => this.deleteManyTasks(this.state.todoList.filter(task => task.completed === true))}
-            >Clear all done</button>
+            >Clear all done
+            </button>
             <div></div>
           </div>
 
