@@ -313,7 +313,7 @@ class App extends React.Component {
             <div style={{ flex: 1 }}>
               <button
                 className="btn btn-sm btn-outline-dark delete"
-                onClick={() => self.deleteItem(task)}>-</button>
+                onClick={() => self.strikeUnstrike(task)}>Complete</button>
             </div>
 
           </div>
@@ -348,7 +348,7 @@ class App extends React.Component {
             <div style={{ flex: 1 }}>
               <button
                 className="btn btn-sm btn-outline-dark delete"
-                onClick={() => self.deleteItem(task)}>-</button>
+                onClick={() => self.deleteItem(task)}>Delete</button>
             </div>
 
           </div>
