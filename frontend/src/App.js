@@ -5,7 +5,6 @@ import { FocusModal } from './components/Modal.js';
 import {
   Button,
 } from 'reactstrap';
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 class App extends React.Component {
   constructor(props) {

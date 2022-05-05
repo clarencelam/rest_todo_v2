@@ -10,8 +10,6 @@ import {
     Input,
     Label,
 } from "reactstrap";
-import { Editor } from "react-draft-wysiwyg";
-import { EditorState, convertToRaw, convertFromRaw, ContentState, getCurrentContent } from 'draft-js';
 import {TimerComponent} from "./Timer.js"
 
 export class FocusModal extends React.Component {
